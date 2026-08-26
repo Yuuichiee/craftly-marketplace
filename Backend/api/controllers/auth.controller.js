@@ -29,9 +29,15 @@ export const login = async (req, res, next) => {
     const isCorrect = bcrypt.compareSync(req.body.password, user.password);
     if (!isCorrect) return next(createError(400, "Wrong password or username!"));
 
+    const jwtSecret = process.env.JWT_KEY;
+    if (!jwtSecret) {
+      console.error("JWT_KEY environment variable is not defined!");
+      return next(createError(500, "Internal Server Error"));
+    }
+
     const token = jwt.sign(
       { id: user._id, isSeller: user.isSeller },
-      process.env.JWT_KEY,
+      jwtSecret,
       { expiresIn: "7d" }
     );
 
