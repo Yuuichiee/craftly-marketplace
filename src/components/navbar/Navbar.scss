@@ -30,10 +30,11 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   }
 
-  // ── ALTERNATING SHOOTING STAR LIGHT STREAK (LEFT -> RIGHT & RIGHT -> LEFT) ──
+  // ── ALTERNATING SHOOTING STAR LIGHT STREAK ON THE BOTTOM BORDER LINE (RED ARROW ↑) ──
   .navbar-shooting-star {
     position: absolute;
-    top: 0;
+    bottom: -1px; // Positioned on the bottom edge line
+    top: auto;
     width: 260px;
     height: 2px;
     opacity: 0;
@@ -42,14 +43,14 @@
     &.sweep-left {
       left: -30%;
       background: linear-gradient(90deg, transparent, #38bdf8, #ffffff);
-      box-shadow: 0 0 15px #38bdf8, 0 0 30px #ffffff;
+      box-shadow: 0 0 12px #38bdf8, 0 0 24px #ffffff;
       animation: shootingStarLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
     &.sweep-right {
       right: -30%;
       background: linear-gradient(270deg, transparent, #38bdf8, #ffffff);
-      box-shadow: 0 0 15px #38bdf8, 0 0 30px #ffffff;
+      box-shadow: 0 0 12px #38bdf8, 0 0 24px #ffffff;
       animation: shootingStarRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
   }
