@@ -1,17 +1,12 @@
 import React from "react";
-import MarvelPlasmaBeam from "../marvelVfx/MarvelPlasmaBeam";
 import "./EnergyHeading.scss";
 
 const EnergyHeading = ({ text, highlightText }) => {
   return (
-    <div className="marvel-energy-heading-wrap">
-      {/* MARVEL COSMIC PLASMA BEAM CANVAS */}
-      <MarvelPlasmaBeam />
-
-      {/* MARVEL FUTURISTIC ENERGY AURA HEADING */}
-      <h1 className="marvel-title">
-        <span className="text-white">{text}</span> <br />
-        <span className="marvel-plasma-text">{highlightText}</span>
+    <div className="clean-hero-heading">
+      <h1 className="hero-title-main">
+        {text} <br />
+        <span className="title-highlight">{highlightText}</span>
       </h1>
     </div>
   );

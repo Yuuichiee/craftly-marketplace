@@ -8,7 +8,7 @@ import "./Navbar.scss";
 function Navbar() {
   const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const [revealed, setRevealed] = useState(false);
+  const [triggerStar, setTriggerStar] = useState(false);
   const [open, setOpen] = useState(false);
 
   const lastScrollY = useRef(0);
@@ -17,12 +17,21 @@ function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // Shooting star entrance reveal on mount
+  // Shooting star streak sweeps across navbar every 4.5 seconds recursively
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setRevealed(true);
-    }, 200);
-    return () => clearTimeout(timer);
+    // Initial trigger
+    setTriggerStar(true);
+    const starTimer = setTimeout(() => setTriggerStar(false), 1200);
+
+    const interval = setInterval(() => {
+      setTriggerStar(true);
+      setTimeout(() => setTriggerStar(false), 1200);
+    }, 4500);
+
+    return () => {
+      clearTimeout(starTimer);
+      clearInterval(interval);
+    };
   }, []);
 
   // Hide navbar on scroll down, reveal on scroll up
@@ -81,9 +90,9 @@ function Navbar() {
   ];
 
   return (
-    <header className={`modern-navbar-header ${visible ? "visible" : "hidden"} ${scrolled ? "scrolled" : ""} ${revealed ? "revealed" : ""}`}>
-      {/* ── SHOOTING STAR ENTRANCE EFFECT ── */}
-      <div className="navbar-shooting-star" />
+    <header className={`modern-navbar-header ${visible ? "visible" : "hidden"} ${scrolled ? "scrolled" : ""}`}>
+      {/* ── RECURRING SHOOTING STAR LIGHT STREAK (EVERY 4.5s) ── */}
+      <div className={`navbar-shooting-star ${triggerStar ? "sweep" : ""}`} />
 
       <div className="navbar-container">
         {/* LOGO */}

@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(4, 4, 9, 0.7);
+  background: rgba(3, 3, 7, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -25,34 +25,34 @@
   }
 
   &.scrolled {
-    background: rgba(4, 4, 9, 0.92);
+    background: rgba(2, 2, 6, 0.95);
     border-bottom-color: rgba(124, 58, 237, 0.3);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   }
 
-  // ── SHOOTING STAR ENTRANCE EFFECT ──
+  // ── RECURRING SHOOTING STAR ENTRANCE LINE ──
   .navbar-shooting-star {
     position: absolute;
     top: 0;
     left: -30%;
-    width: 200px;
+    width: 250px;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #06b6d4, #ffffff);
-    box-shadow: 0 0 15px #06b6d4, 0 0 30px #ffffff;
+    background: linear-gradient(90deg, transparent, #38bdf8, #ffffff);
+    box-shadow: 0 0 15px #38bdf8, 0 0 30px #ffffff;
     opacity: 0;
     pointer-events: none;
+
+    &.sweep {
+      animation: shootingStarSweep 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
   }
 
-  &.revealed .navbar-shooting-star {
-    animation: shootingStarReveal 1.2s ease-out forwards;
-  }
-
-  @keyframes shootingStarReveal {
+  @keyframes shootingStarSweep {
     0% {
       left: -30%;
       opacity: 1;
     }
-    70% {
+    75% {
       opacity: 1;
     }
     100% {
