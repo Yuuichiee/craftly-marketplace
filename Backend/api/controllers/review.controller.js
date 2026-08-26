@@ -14,17 +14,15 @@ export const createReview = async (req, res, next) => {
   });
 
   try {
-    const review = await Review.findOne({
+    const existing = await Review.findOne({
       gigId: req.body.gigId,
       userId: req.userId,
     });
 
-    if (review)
+    if (existing)
       return next(
         createError(403, "You have already created a review for this gig!")
       );
-
-    //TODO: check if the user purchased the gig.
 
     const savedReview = await newReview.save();
 
@@ -45,8 +43,22 @@ export const getReviews = async (req, res, next) => {
     next(err);
   }
 };
+
 export const deleteReview = async (req, res, next) => {
   try {
+    const review = await Review.findById(req.params.id);
+    if (!review) return next(createError(404, "Review not found!"));
+
+    if (review.userId !== req.userId)
+      return next(createError(403, "You can only delete your own review!"));
+
+    // Decrement gig star counts
+    await Gig.findByIdAndUpdate(review.gigId, {
+      $inc: { totalStars: -review.star, starNumber: -1 },
+    });
+
+    await Review.findByIdAndDelete(req.params.id);
+    res.status(200).send("Review has been deleted.");
   } catch (err) {
     next(err);
   }

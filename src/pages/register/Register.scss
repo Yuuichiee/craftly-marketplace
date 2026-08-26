@@ -1,0 +1,8 @@
+// Register shares the .auth-page base styles from Login.scss
+// (Vite compiles all SCSS into one bundle, so .auth-page styles are globally available)
+
+.register-page {
+  .auth-visual .visual-content {
+    gap: 32px;
+  }
+}

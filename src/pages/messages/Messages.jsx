@@ -1,81 +1,119 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import newRequest from "../../utils/newRequest";
+import { useAuth } from "../../context/AuthContext";
+import { showToast } from "../../utils/toast";
 import "./Messages.scss";
 
 const Messages = () => {
-  const currentUser = {
-    id: 1,
-    username: "Anna",
-    isSeller: true,
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    const fetchConversations = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await newRequest.get("/conversations");
+        setConversations(res.data);
+      } catch (err) {
+        setError(err.message || "Failed to load conversations");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConversations();
+  }, [currentUser, navigate]);
+
+  const handleMarkAsRead = async (id) => {
+    try {
+      await newRequest.put(`/conversations/${id}`);
+      setConversations((prev) =>
+        prev.map((c) => {
+          if (c.id === id) {
+            return currentUser.isSeller
+              ? { ...c, readBySeller: true }
+              : { ...c, readByBuyer: true };
+          }
+          return c;
+        })
+      );
+      showToast("Marked as read", "success");
+    } catch (err) {
+      showToast(err.message || "Failed to update status", "error");
+    }
   };
 
-  const message = `Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
-  maxime cum corporis esse aspernatur laborum dolorum? Animi
-  molestias aliquam, cum nesciunt, aut, ut quam vitae saepe repellat
-  nobis praesentium placeat.`;
+  if (!currentUser) return null;
 
   return (
     <div className="messages">
       <div className="container">
         <div className="title">
-          <h1>Messages</h1>
+          <h1>Inbox</h1>
         </div>
-        <table>
-          <tr>
-            <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
-            <th>Last Message</th>
-            <th>Date</th>
-            <th>Action</th>
-          </tr>
-          <tr className="active">
-            <td>Charley Sharp</td>
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>1 hour ago</td>
-            <td>
-              <button>Mark as Read</button>
-            </td>
-          </tr>
-          <tr className="active">
-            <td>John Doe</td>
 
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>2 hours ago</td>
-            <td>
-              <button>Mark as Read</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Elinor Good</td>
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>1 day ago</td>
-          </tr>
-          <tr>
-            <td>Garner David </td>
-            <td>
-              <Link to="/message/123" className="link">
-                {message.substring(0, 100)}...
-              </Link>
-            </td>
-            <td>2 days ago</td>
-          </tr>
-          <tr>
-            <td>Troy Oliver</td>
-            <td>{message.substring(0, 100)}</td>
-            <td>1 week ago</td>
-          </tr>
-        </table>
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "40px", color: "var(--text-secondary)" }}>
+            Loading conversations...
+          </div>
+        ) : error ? (
+          <div style={{ textAlign: "center", padding: "40px", color: "#ef4444" }}>
+            {error}
+          </div>
+        ) : conversations.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "var(--text-muted)" }}>
+            <h3>No messages yet</h3>
+            <p>Conversations with sellers or buyers will appear here.</p>
+          </div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>{currentUser.isSeller ? "Buyer" : "Seller"}</th>
+                <th>Last Message</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {conversations.map((c) => {
+                const isUnread = currentUser.isSeller
+                  ? !c.readBySeller
+                  : !c.readByBuyer;
+
+                return (
+                  <tr className={isUnread ? "active" : ""} key={c.id}>
+                    <td>{currentUser.isSeller ? c.buyerId : c.sellerId}</td>
+                    <td>
+                      <Link to={`/message/${c.id}`} className="link" style={{ color: "var(--text-primary)" }}>
+                        {c.lastMessage ? c.lastMessage.substring(0, 80) + "..." : "No messages yet"}
+                      </Link>
+                    </td>
+                    <td>{new Date(c.updatedAt).toLocaleDateString()}</td>
+                    <td>
+                      {isUnread && (
+                        <button onClick={() => handleMarkAsRead(c.id)} className="btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }}>
+                          Mark as Read
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

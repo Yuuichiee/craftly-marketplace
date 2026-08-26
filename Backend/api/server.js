@@ -1,6 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
 import gigRoute from "./routes/gig.route.js";
 import orderRoute from "./routes/order.route.js";
@@ -13,7 +15,6 @@ import cors from "cors";
 import dns from "node:dns";
 
 const app = express();
-dotenv.config();
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 mongoose.set("strictQuery", true);
 
@@ -22,7 +23,18 @@ const connect = async () => {
   console.log("Connected to mongoDB!");
 };
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, etc.) or any localhost / local IP origin
+      if (!origin || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -37,14 +49,13 @@ app.use("/api/reviews", reviewRoute);
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorMessage = err.message || "Something went wrong!";
-
-  return res.status(errorStatus).send(errorMessage);
+  return res.status(errorStatus).json({ message: errorMessage });
 });
 
 const start = async () => {
   try {
     await connect();
-    app.listen(8800, () => console.log("Backend server is running!"));
+    app.listen(8800, () => console.log("Backend server is running on port 8800!"));
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
     process.exit(1);

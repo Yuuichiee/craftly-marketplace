@@ -1,279 +1,297 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import newRequest from "../../utils/newRequest";
+import { useAuth } from "../../context/AuthContext";
+import { showToast } from "../../utils/toast";
 import "./Gig.scss";
-import { Slider } from "infinite-react-carousel/lib";
 
 function Gig() {
+  const { id } = useParams();
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const [gig, setGig] = useState(null);
+  const [seller, setSeller] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [reviewDesc, setReviewDesc] = useState("");
+  const [reviewStar, setReviewStar] = useState(5);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchGigData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const gigRes = await newRequest.get(`/gigs/single/${id}`);
+        setGig(gigRes.data);
+
+        if (gigRes.data.userId) {
+          try {
+            const sellerRes = await newRequest.get(`/users/${gigRes.data.userId}`);
+            setSeller(sellerRes.data);
+          } catch {
+            // Seller user data optional fallback
+          }
+        }
+
+        const reviewsRes = await newRequest.get(`/reviews/${id}`);
+        setReviews(reviewsRes.data);
+      } catch (err) {
+        setError(err.message || "Failed to load gig details");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGigData();
+  }, [id]);
+
+  const handleOrder = async () => {
+    if (!currentUser) {
+      showToast("Please log in to place an order", "error");
+      navigate("/login");
+      return;
+    }
+    if (currentUser.isSeller) {
+      showToast("Sellers cannot order gigs", "error");
+      return;
+    }
+
+    setOrderLoading(true);
+    try {
+      await newRequest.post(`/orders/${id}`);
+      showToast("Order placed successfully!", "success");
+      navigate("/orders");
+    } catch (err) {
+      showToast(err.message || "Order placement failed", "error");
+    } finally {
+      setOrderLoading(false);
+    }
+  };
+
+  const handleContact = async () => {
+    if (!currentUser) {
+      showToast("Please log in to message seller", "error");
+      navigate("/login");
+      return;
+    }
+    if (!seller) return;
+
+    try {
+      const sellerId = seller._id;
+      const buyerId = currentUser._id;
+      const conversationId = currentUser.isSeller ? buyerId + sellerId : sellerId + buyerId;
+
+      try {
+        const res = await newRequest.get(`/conversations/single/${conversationId}`);
+        navigate(`/message/${res.data.id}`);
+      } catch {
+        const res = await newRequest.post(`/conversations`, {
+          to: seller._id,
+        });
+        navigate(`/message/${res.data.id}`);
+      }
+    } catch (err) {
+      showToast(err.message || "Could not open conversation", "error");
+    }
+  };
+
+  const handleAddReview = async (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      showToast("Please log in to write a review", "error");
+      navigate("/login");
+      return;
+    }
+    if (!reviewDesc.trim()) {
+      showToast("Please enter review description", "error");
+      return;
+    }
+
+    setReviewLoading(true);
+    try {
+      const res = await newRequest.post("/reviews", {
+        gigId: id,
+        desc: reviewDesc.trim(),
+        star: Number(reviewStar),
+      });
+      setReviews((prev) => [res.data, ...prev]);
+      setReviewDesc("");
+      showToast("Review submitted!", "success");
+    } catch (err) {
+      showToast(err.message || "Failed to add review", "error");
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="gig" style={{ textAlign: "center", padding: "100px 0", color: "var(--text-secondary)" }}>
+        Loading service details...
+      </div>
+    );
+  }
+
+  if (error || !gig) {
+    return (
+      <div className="gig" style={{ textAlign: "center", padding: "100px 0", color: "#ef4444" }}>
+        <h3>{error || "Gig not found"}</h3>
+        <Link to="/gigs" className="btn-primary" style={{ marginTop: "16px", display: "inline-block" }}>
+          Browse Services
+        </Link>
+      </div>
+    );
+  }
+
+  const starRating = gig.starNumber > 0 ? (gig.totalStars / gig.starNumber).toFixed(1) : "New";
+
   return (
     <div className="gig">
       <div className="container">
         <div className="left">
-          <span className="breadcrumbs">Liverr &gt; Graphics &amp; Design &gt;</span>
-          <h1>I will create ai generated art for you</h1>
+          <span className="breadcrumbs">Liverr &gt; {gig.cat} &gt;</span>
+          <h1>{gig.title}</h1>
           <div className="user">
             <img
               className="pp"
-              src="https://images.pexels.com/photos/720327/pexels-photo-720327.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
+              src={seller?.img || "https://images.pexels.com/photos/720327/pexels-photo-720327.jpeg?auto=compress&cs=tinysrgb&w=1600"}
+              alt={seller?.username || "Seller"}
             />
-            <span>Anna Bell</span>
+            <span>{seller?.username || "Freelancer"}</span>
             <div className="stars">
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <img src="/img/star.png" alt="" />
-              <span>5</span>
+              <span style={{ color: "#f59e0b", fontWeight: "bold" }}>★ {starRating}</span>
+              <span>({gig.starNumber || 0})</span>
             </div>
           </div>
-          <Slider slidesToShow={1} arrowsScroll={1} className="slider">
+
+          <div className="slider" style={{ marginBottom: "30px" }}>
             <img
-              src="https://images.pexels.com/photos/1074535/pexels-photo-1074535.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
+              src={gig.cover}
+              alt={gig.title}
+              style={{ width: "100%", maxHeight: "500px", objectFit: "cover", borderRadius: "12px" }}
             />
-            <img
-              src="https://images.pexels.com/photos/1462935/pexels-photo-1462935.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-            <img
-              src="https://images.pexels.com/photos/1054777/pexels-photo-1054777.jpeg?auto=compress&cs=tinysrgb&w=1600"
-              alt=""
-            />
-          </Slider>
+          </div>
+
           <h2>About This Gig</h2>
-          <p>
-            I use an AI program to create images based on text prompts. This
-            means I can help you to create a vision you have through a textual
-            description of your scene without requiring any reference images.
-            Some things I've found it often excels at are: Character portraits
-            (E.g. a picture to go with your DnD character) Landscapes (E.g.
-            wallpapers, illustrations to compliment a story) Logos (E.g. Esports
-            team, business, profile picture) You can be as vague or as
-            descriptive as you want. Being more vague will allow the AI to be
-            more creative which can sometimes result in some amazing images. You
-            can also be incredibly precise if you have a clear image of what you
-            want in mind. All of the images I create are original and will be
-            found nowhere else. If you have any questions you're more than
-            welcome to send me a message.
-          </p>
+          <p>{gig.desc}</p>
+
           <div className="seller">
             <h2>About The Seller</h2>
             <div className="user">
               <img
-                src="https://images.pexels.com/photos/720327/pexels-photo-720327.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                alt=""
+                src={seller?.img || "https://images.pexels.com/photos/720327/pexels-photo-720327.jpeg?auto=compress&cs=tinysrgb&w=1600"}
+                alt={seller?.username || "Seller"}
               />
               <div className="info">
-                <span>Anna Bell</span>
+                <span>{seller?.username || "Freelancer"}</span>
                 <div className="stars">
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <img src="/img/star.png" alt="" />
-                  <span>5</span>
+                  <span style={{ color: "#f59e0b", fontWeight: "bold" }}>★ {starRating}</span>
                 </div>
-                <button>Contact Me</button>
+                <button onClick={handleContact}>Contact Me</button>
               </div>
             </div>
+
             <div className="box">
               <div className="items">
                 <div className="item">
                   <span className="title">From</span>
-                  <span className="desc">USA</span>
+                  <span className="desc">{seller?.country || "Global"}</span>
                 </div>
                 <div className="item">
                   <span className="title">Member since</span>
-                  <span className="desc">Aug 2022</span>
-                </div>
-                <div className="item">
-                  <span className="title">Avg. response time</span>
-                  <span className="desc">4 hours</span>
-                </div>
-                <div className="item">
-                  <span className="title">Last delivery</span>
-                  <span className="desc">1 day</span>
-                </div>
-                <div className="item">
-                  <span className="title">Languages</span>
-                  <span className="desc">English</span>
+                  <span className="desc">2024</span>
                 </div>
               </div>
               <hr />
-              <p>
-                My name is Anna, I enjoy creating AI generated art in my spare
-                time. I have a lot of experience using the AI program and that
-                means I know what to prompt the AI with to get a great and
-                incredibly detailed result.
-              </p>
+              <p>{seller?.desc || "Professional freelancer dedicated to delivering top-tier work."}</p>
             </div>
           </div>
+
           <div className="reviews">
             <h2>Reviews</h2>
-            <div className="item">
-              <div className="user">
-                <img
-                  className="pp"
-                  src="https://images.pexels.com/photos/839586/pexels-photo-839586.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  alt=""
-                />
-                <div className="info">
-                  <span>Garner David</span>
-                  <div className="country">
-                    <img
-                      src="https://fiverr-dev-res.cloudinary.com/general_assets/flags/1f1fa-1f1f8.png"
-                      alt=""
-                    />
-                    <span>United States</span>
-                  </div>
+            {currentUser && !currentUser.isSeller && (
+              <form onSubmit={handleAddReview} style={{ marginBottom: "30px", background: "rgba(255,255,255,0.03)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)" }}>
+                <h4 style={{ marginBottom: "12px" }}>Add a Review</h4>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "12px" }}>
+                  <label>Rating:</label>
+                  <select value={reviewStar} onChange={(e) => setReviewStar(e.target.value)} style={{ padding: "6px 12px", borderRadius: "6px", background: "var(--bg-surface-2)", color: "white", border: "1px solid var(--border)" }}>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="2">2 Stars</option>
+                    <option value="1">1 Star</option>
+                  </select>
                 </div>
-              </div>
-              <div className="stars">
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <span>5</span>
-              </div>
-              <p>
-                I just want to say that art_with_ai was the first, and after
-                this, the only artist Ill be using on Fiverr. Communication was
-                amazing, each and every day he sent me images that I was free to
-                request changes to. They listened, understood, and delivered
-                above and beyond my expectations. I absolutely recommend this
-                gig, and know already that Ill be using it again very very soon
-              </p>
-              <div className="helpful">
-                <span>Helpful?</span>
-                <img src="/img/like.png" alt="" />
-                <span>Yes</span>
-                <img src="/img/dislike.png" alt="" />
-                <span>No</span>
-              </div>
-            </div>
-            <hr />
-            <div className="item">
-              <div className="user">
-                <img
-                  className="pp"
-                  src="https://images.pexels.com/photos/4124367/pexels-photo-4124367.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  alt=""
+                <textarea
+                  rows="3"
+                  placeholder="Share your experience..."
+                  value={reviewDesc}
+                  onChange={(e) => setReviewDesc(e.target.value)}
+                  style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border)", color: "white", marginBottom: "12px", outline: "none" }}
                 />
-                <div className="info">
-                  <span>Sidney Owen</span>
-                  <div className="country">
-                    <img
-                      src="https://fiverr-dev-res.cloudinary.com/general_assets/flags/1f1e9-1f1ea.png"
-                      alt=""
-                    />
-                    <span>Germany</span>
+                <button type="submit" className="btn-primary" disabled={reviewLoading}>
+                  {reviewLoading ? "Submitting..." : "Submit Review"}
+                </button>
+              </form>
+            )}
+
+            {reviews.length === 0 ? (
+              <p style={{ color: "var(--text-muted)", fontStyle: "italic" }}>No reviews yet for this service.</p>
+            ) : (
+              reviews.map((r) => (
+                <div className="item" key={r._id}>
+                  <div className="user">
+                    <div className="pp" style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--violet)", display: "flex", alignItems: "center", justifyCenter: "center", fontWeight: "bold", color: "white" }}>
+                      {r.userId ? r.userId.slice(0, 2).toUpperCase() : "U"}
+                    </div>
+                    <div className="info">
+                      <span>User</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="stars">
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <span>5</span>
-              </div>
-              <p>
-                The designer took my photo for my book cover to the next level!
-                Professionalism and ease of working with designer along with
-                punctuality is above industry standards!! Whatever your project
-                is, you need this designer!
-              </p>
-              <div className="helpful">
-                <span>Helpful?</span>
-                <img src="/img/like.png" alt="" />
-                <span>Yes</span>
-                <img src="/img/dislike.png" alt="" />
-                <span>No</span>
-              </div>
-            </div>
-            <hr />
-            <div className="item">
-              <div className="user">
-                <img
-                  className="pp"
-                  src="https://images.pexels.com/photos/842980/pexels-photo-842980.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  alt=""
-                />
-                <div className="info">
-                  <span>Lyle Giles </span>
-                  <div className="country">
-                    <img
-                      src="https://fiverr-dev-res.cloudinary.com/general_assets/flags/1f1fa-1f1f8.png"
-                      alt=""
-                    />
-                    <span>United States</span>
+                  <div className="stars">
+                    <span style={{ color: "#f59e0b" }}>{"★".repeat(r.star)}</span>
+                    <span style={{ marginLeft: "6px" }}>{r.star}</span>
                   </div>
+                  <p>{r.desc}</p>
                 </div>
-              </div>
-              <div className="stars">
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <img src="/img/star.png" alt="" />
-                <span>5</span>
-              </div>
-              <p>
-                Amazing work! Communication was
-                amazing, each and every day he sent me images that I was free to
-                request changes to. They listened, understood, and delivered
-                above and beyond my expectations. I absolutely recommend this
-                gig, and know already that Ill be using it again very very soon
-              </p>
-              <div className="helpful">
-                <span>Helpful?</span>
-                <img src="/img/like.png" alt="" />
-                <span>Yes</span>
-                <img src="/img/dislike.png" alt="" />
-                <span>No</span>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </div>
+
         <div className="right">
           <div className="price">
-            <h3>1 AI generated image</h3>
-            <h2>$ 59.99</h2>
+            <h3>{gig.shortTitle || gig.title}</h3>
+            <h2>$ {gig.price}</h2>
           </div>
-          <p>
-            I will create a unique high quality AI generated image based on a
-            description that you give me
-          </p>
+          <p>{gig.shortDesc || gig.desc}</p>
           <div className="details">
             <div className="item">
               <img src="/img/clock.png" alt="" />
-              <span>2 Days Delivery</span>
+              <span>{gig.deliveryTime || 3} Days Delivery</span>
             </div>
             <div className="item">
               <img src="/img/recycle.png" alt="" />
-              <span>3 Revisions</span>
+              <span>{gig.revisionNumber || 1} Revisions</span>
             </div>
           </div>
-          <div className="features">
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Prompt writing</span>
+          {gig.features && gig.features.length > 0 && (
+            <div className="features">
+              {gig.features.map((feat, i) => (
+                <div className="item" key={i}>
+                  <img src="/img/greencheck.png" alt="" />
+                  <span>{feat}</span>
+                </div>
+              ))}
             </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Artwork delivery</span>
-            </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Image upscaling</span>
-            </div>
-            <div className="item">
-              <img src="/img/greencheck.png" alt="" />
-              <span>Additional design</span>
-            </div>
-          </div>
-          <button>Continue</button>
+          )}
+          <button className="btn-primary" style={{ width: "100%", marginTop: "20px" }} onClick={handleOrder} disabled={orderLoading}>
+            {orderLoading ? "Processing Order..." : `Order Now ($${gig.price})`}
+          </button>
         </div>
       </div>
     </div>
