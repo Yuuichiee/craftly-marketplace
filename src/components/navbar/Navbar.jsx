@@ -24,10 +24,8 @@ function Navbar() {
     let currentPosition = "top";
 
     const runCycle = () => {
-      // 1. Fire Star at currentPosition (Top: Left->Right, or Bottom: Right->Left)
       setStarState({ active: true, position: currentPosition });
 
-      // 2. After 1.2s when star finishes leaving, immediately switch edge & fire opposite star
       setTimeout(() => {
         setStarState({ active: false, position: currentPosition });
         const nextPosition = currentPosition === "top" ? "bottom" : "top";
@@ -106,19 +104,19 @@ function Navbar() {
 
   return (
     <header className={`modern-navbar-header ${visible ? "visible" : "hidden"} ${scrolled ? "scrolled" : ""}`}>
-      {/* ── SHOOTING STAR ON TOP BORDER (LEFT ➔ RIGHT) ── */}
-      <div
-        className={`navbar-star-top ${
-          starState.active && starState.position === "top" ? "sweep-top" : ""
-        }`}
-      />
-
-      {/* ── SHOOTING STAR ON BOTTOM BORDER (RIGHT ➔ LEFT) ── */}
-      <div
-        className={`navbar-star-bottom ${
-          starState.active && starState.position === "bottom" ? "sweep-bottom" : ""
-        }`}
-      />
+      {/* ── ISOLATED SHOOTING STAR OVERFLOW CONTAINER ── */}
+      <div className="navbar-star-container">
+        <div
+          className={`navbar-star-top ${
+            starState.active && starState.position === "top" ? "sweep-top" : ""
+          }`}
+        />
+        <div
+          className={`navbar-star-bottom ${
+            starState.active && starState.position === "bottom" ? "sweep-bottom" : ""
+          }`}
+        />
+      </div>
 
       <div className="navbar-container">
         {/* LOGO */}
