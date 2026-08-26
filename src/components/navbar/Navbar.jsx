@@ -8,7 +8,7 @@ import "./Navbar.scss";
 function Navbar() {
   const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const [starState, setStarState] = useState({ active: false, direction: "left" });
+  const [starState, setStarState] = useState({ active: false, position: "top" });
   const [open, setOpen] = useState(false);
 
   const lastScrollY = useRef(0);
@@ -17,31 +17,34 @@ function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // Alternating shooting stars: Left -> Right, then immediately Right -> Left from opposite side
+  // Alternating loop:
+  // 1. Star 1 sweeps across TOP border (Left -> Right)
+  // 2. As soon as Star 1 exits top-right, Star 2 enters from BOTTOM-RIGHT and sweeps across BOTTOM border (Right -> Left)
   useEffect(() => {
-    let currentDir = "left";
+    let currentPosition = "top";
 
-    const triggerCycle = () => {
-      // 1. Fire Star 1 in currentDir
-      setStarState({ active: true, direction: currentDir });
+    const runCycle = () => {
+      // 1. Fire Star at currentPosition (Top: Left->Right, or Bottom: Right->Left)
+      setStarState({ active: true, position: currentPosition });
 
-      // 2. As soon as Star 1 finishes leaving (1.2s), fire Star 2 in opposite direction
+      // 2. After 1.2s when star finishes leaving, immediately switch edge & fire opposite star
       setTimeout(() => {
-        setStarState({ active: false, direction: currentDir });
-        currentDir = currentDir === "left" ? "right" : "left";
+        setStarState({ active: false, position: currentPosition });
+        const nextPosition = currentPosition === "top" ? "bottom" : "top";
+        currentPosition = nextPosition;
 
         setTimeout(() => {
-          setStarState({ active: true, direction: currentDir });
+          setStarState({ active: true, position: nextPosition });
           setTimeout(() => {
-            setStarState({ active: false, direction: currentDir });
-            currentDir = currentDir === "left" ? "right" : "left";
+            setStarState({ active: false, position: nextPosition });
+            currentPosition = nextPosition === "top" ? "bottom" : "top";
           }, 1200);
-        }, 300);
-      }, 1300);
+        }, 150);
+      }, 1250);
     };
 
-    triggerCycle();
-    const interval = setInterval(triggerCycle, 4200);
+    runCycle();
+    const interval = setInterval(runCycle, 3800);
 
     return () => clearInterval(interval);
   }, []);
@@ -103,10 +106,17 @@ function Navbar() {
 
   return (
     <header className={`modern-navbar-header ${visible ? "visible" : "hidden"} ${scrolled ? "scrolled" : ""}`}>
-      {/* ── ALTERNATING SHOOTING STAR LIGHT STREAK (LEFT -> RIGHT & RIGHT -> LEFT) ── */}
+      {/* ── SHOOTING STAR ON TOP BORDER (LEFT ➔ RIGHT) ── */}
       <div
-        className={`navbar-shooting-star ${
-          starState.active ? (starState.direction === "left" ? "sweep-left" : "sweep-right") : ""
+        className={`navbar-star-top ${
+          starState.active && starState.position === "top" ? "sweep-top" : ""
+        }`}
+      />
+
+      {/* ── SHOOTING STAR ON BOTTOM BORDER (RIGHT ➔ LEFT) ── */}
+      <div
+        className={`navbar-star-bottom ${
+          starState.active && starState.position === "bottom" ? "sweep-bottom" : ""
         }`}
       />
 

@@ -30,32 +30,24 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   }
 
-  // ── ALTERNATING SHOOTING STAR LIGHT STREAK ON THE BOTTOM BORDER LINE (RED ARROW ↑) ──
-  .navbar-shooting-star {
+  // ── STAR 1: TOP BORDER EDGE (RED CROSS X) — SWEEPS LEFT ➔ RIGHT ──
+  .navbar-star-top {
     position: absolute;
-    bottom: -1px; // Positioned on the bottom edge line
-    top: auto;
+    top: 0;
+    left: -30%;
     width: 260px;
     height: 2px;
+    background: linear-gradient(90deg, transparent, #38bdf8, #ffffff);
+    box-shadow: 0 0 12px #38bdf8, 0 0 24px #ffffff;
     opacity: 0;
     pointer-events: none;
 
-    &.sweep-left {
-      left: -30%;
-      background: linear-gradient(90deg, transparent, #38bdf8, #ffffff);
-      box-shadow: 0 0 12px #38bdf8, 0 0 24px #ffffff;
-      animation: shootingStarLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    }
-
-    &.sweep-right {
-      right: -30%;
-      background: linear-gradient(270deg, transparent, #38bdf8, #ffffff);
-      box-shadow: 0 0 12px #38bdf8, 0 0 24px #ffffff;
-      animation: shootingStarRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    &.sweep-top {
+      animation: sweepTopLeftToRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
   }
 
-  @keyframes shootingStarLeft {
+  @keyframes sweepTopLeftToRight {
     0% {
       left: -30%;
       opacity: 1;
@@ -69,7 +61,24 @@
     }
   }
 
-  @keyframes shootingStarRight {
+  // ── STAR 2: BOTTOM BORDER EDGE (RED ARROW ↑) — SWEEPS RIGHT ➔ LEFT ──
+  .navbar-star-bottom {
+    position: absolute;
+    bottom: -1px;
+    right: -30%;
+    width: 260px;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #38bdf8, #ffffff);
+    box-shadow: 0 0 12px #38bdf8, 0 0 24px #ffffff;
+    opacity: 0;
+    pointer-events: none;
+
+    &.sweep-bottom {
+      animation: sweepBottomRightToLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+  }
+
+  @keyframes sweepBottomRightToLeft {
     0% {
       right: -30%;
       opacity: 1;
