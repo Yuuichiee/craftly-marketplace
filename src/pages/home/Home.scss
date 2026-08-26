@@ -48,15 +48,16 @@
         align-items: center;
         gap: 8px;
         padding: 6px 16px;
-        background: rgba(124, 58, 237, 0.1);
-        border: 1px solid rgba(124, 58, 237, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: var(--radius-full);
         font-size: 13px;
         font-weight: 600;
-        color: var(--violet-light);
+        color: #f1f5f9;
         letter-spacing: 0.04em;
+        backdrop-filter: blur(12px);
 
-        .spark { color: var(--cyan); }
+        .spark { color: #38bdf8; }
       }
 
       h1 {

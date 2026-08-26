@@ -20,19 +20,20 @@ const UniverseBackground = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // ── 1. TINY GEMINI 4-POINT SPARKLE STARS ──
+    // ── 1. APPLE / LINEAR LUXURY METALLIC STARS (ZERO PURPLE CIRCLES) ──
     const stars = [];
-    const numStars = 220;
+    const numStars = 200;
 
     for (let i = 0; i < numStars; i++) {
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        size: Math.random() * 1.6 + 0.6, // Super tiny size (0.6px to 2.2px)
-        alpha: Math.random() * 0.8 + 0.2,
-        twinkleSpeed: Math.random() * 0.02 + 0.005,
-        color: Math.random() > 0.4 ? "#ffffff" : Math.random() > 0.5 ? "#d8b4fe" : "#7dd3fc",
-        isGeminiSparkle: Math.random() > 0.4, // 60% of stars are 4-pointed Gemini sparkles
+        size: Math.random() * 1.2 + 0.4, // Micro tiny sizes
+        alpha: Math.random() * 0.7 + 0.2,
+        twinkleSpeed: Math.random() * 0.015 + 0.004,
+        // Apple/Linear Palette: Pure White, Platinum, Muted Slate Titanium
+        color: Math.random() > 0.4 ? "#ffffff" : Math.random() > 0.5 ? "#f1f5f9" : "#94a3b8",
+        isGeminiSparkle: Math.random() > 0.5,
       });
     }
 
@@ -52,7 +53,7 @@ const UniverseBackground = () => {
     const shootingStars = [];
 
     const spawnShootingStar = () => {
-      if (Math.random() < 0.02 && shootingStars.length < 2) {
+      if (Math.random() < 0.018 && shootingStars.length < 2) {
         shootingStars.push({
           x: Math.random() * width * 0.8,
           y: Math.random() * height * 0.4,
@@ -67,11 +68,11 @@ const UniverseBackground = () => {
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Deep dark void background
-      ctx.fillStyle = "#020205";
+      // Deep Apple Space Black Obsidian Void background
+      ctx.fillStyle = "#040407";
       ctx.fillRect(0, 0, width, height);
 
-      // ── DRAW TINY GEMINI STARS ──
+      // ── DRAW TINY GEMINI LUXURY STARS ──
       stars.forEach((s) => {
         s.alpha += s.twinkleSpeed;
         if (s.alpha > 1 || s.alpha < 0.2) s.twinkleSpeed = -s.twinkleSpeed;
@@ -81,7 +82,7 @@ const UniverseBackground = () => {
         ctx.fillStyle = s.color;
 
         if (s.isGeminiSparkle) {
-          drawGeminiSparkle(ctx, s.x, s.y, s.size * 1.5);
+          drawGeminiSparkle(ctx, s.x, s.y, s.size * 1.4);
         } else {
           ctx.beginPath();
           ctx.arc(s.x, s.y, s.size * 0.5, 0, Math.PI * 2);
@@ -113,7 +114,7 @@ const UniverseBackground = () => {
           ss.y - Math.sin(ss.angle) * ss.len
         );
         trailGrad.addColorStop(0, "#ffffff");
-        trailGrad.addColorStop(0.5, "rgba(125, 211, 252, 0.6)");
+        trailGrad.addColorStop(0.5, "rgba(241, 245, 249, 0.6)");
         trailGrad.addColorStop(1, "transparent");
 
         ctx.strokeStyle = trailGrad;
