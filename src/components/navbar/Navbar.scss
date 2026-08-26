@@ -30,24 +30,31 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   }
 
-  // ── RECURRING SHOOTING STAR ENTRANCE LINE ──
+  // ── ALTERNATING SHOOTING STAR LIGHT STREAK (LEFT -> RIGHT & RIGHT -> LEFT) ──
   .navbar-shooting-star {
     position: absolute;
     top: 0;
-    left: -30%;
-    width: 250px;
+    width: 260px;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #38bdf8, #ffffff);
-    box-shadow: 0 0 15px #38bdf8, 0 0 30px #ffffff;
     opacity: 0;
     pointer-events: none;
 
-    &.sweep {
-      animation: shootingStarSweep 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    &.sweep-left {
+      left: -30%;
+      background: linear-gradient(90deg, transparent, #38bdf8, #ffffff);
+      box-shadow: 0 0 15px #38bdf8, 0 0 30px #ffffff;
+      animation: shootingStarLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    &.sweep-right {
+      right: -30%;
+      background: linear-gradient(270deg, transparent, #38bdf8, #ffffff);
+      box-shadow: 0 0 15px #38bdf8, 0 0 30px #ffffff;
+      animation: shootingStarRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
   }
 
-  @keyframes shootingStarSweep {
+  @keyframes shootingStarLeft {
     0% {
       left: -30%;
       opacity: 1;
@@ -57,6 +64,20 @@
     }
     100% {
       left: 120%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes shootingStarRight {
+    0% {
+      right: -30%;
+      opacity: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      right: 120%;
       opacity: 0;
     }
   }
@@ -117,22 +138,42 @@
         }
       }
 
-      .join-button {
-        padding: 8px 22px;
-        background: transparent;
-        border: 1px solid rgba(124, 58, 237, 0.5);
-        color: var(--text-primary);
-        border-radius: var(--radius-full);
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.25s ease;
+      // AUTH BUTTONS (SEPARATED WITH CLEAN EQUAL SPACING)
+      .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-left: 8px;
 
-        &:hover {
-          background: rgba(124, 58, 237, 0.15);
-          border-color: var(--violet);
-          color: var(--violet-light);
-          box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        .signin-link {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: var(--text-primary);
+          }
+        }
+
+        .join-button {
+          padding: 8px 24px;
+          background: transparent;
+          border: 1px solid rgba(124, 58, 237, 0.5);
+          color: var(--text-primary);
+          border-radius: var(--radius-full);
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          transition: all 0.25s ease;
+
+          &:hover {
+            background: rgba(124, 58, 237, 0.15);
+            border-color: var(--violet);
+            color: var(--violet-light);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+          }
         }
       }
 

@@ -8,7 +8,7 @@ import "./Navbar.scss";
 function Navbar() {
   const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const [triggerStar, setTriggerStar] = useState(false);
+  const [starState, setStarState] = useState({ active: false, direction: "left" });
   const [open, setOpen] = useState(false);
 
   const lastScrollY = useRef(0);
@@ -17,21 +17,33 @@ function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // Shooting star streak sweeps across navbar every 4.5 seconds recursively
+  // Alternating shooting stars: Left -> Right, then immediately Right -> Left from opposite side
   useEffect(() => {
-    // Initial trigger
-    setTriggerStar(true);
-    const starTimer = setTimeout(() => setTriggerStar(false), 1200);
+    let currentDir = "left";
 
-    const interval = setInterval(() => {
-      setTriggerStar(true);
-      setTimeout(() => setTriggerStar(false), 1200);
-    }, 4500);
+    const triggerCycle = () => {
+      // 1. Fire Star 1 in currentDir
+      setStarState({ active: true, direction: currentDir });
 
-    return () => {
-      clearTimeout(starTimer);
-      clearInterval(interval);
+      // 2. As soon as Star 1 finishes leaving (1.2s), fire Star 2 in opposite direction
+      setTimeout(() => {
+        setStarState({ active: false, direction: currentDir });
+        currentDir = currentDir === "left" ? "right" : "left";
+
+        setTimeout(() => {
+          setStarState({ active: true, direction: currentDir });
+          setTimeout(() => {
+            setStarState({ active: false, direction: currentDir });
+            currentDir = currentDir === "left" ? "right" : "left";
+          }, 1200);
+        }, 300);
+      }, 1300);
     };
+
+    triggerCycle();
+    const interval = setInterval(triggerCycle, 4200);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Hide navbar on scroll down, reveal on scroll up
@@ -91,8 +103,12 @@ function Navbar() {
 
   return (
     <header className={`modern-navbar-header ${visible ? "visible" : "hidden"} ${scrolled ? "scrolled" : ""}`}>
-      {/* ── RECURRING SHOOTING STAR LIGHT STREAK (EVERY 4.5s) ── */}
-      <div className={`navbar-shooting-star ${triggerStar ? "sweep" : ""}`} />
+      {/* ── ALTERNATING SHOOTING STAR LIGHT STREAK (LEFT -> RIGHT & RIGHT -> LEFT) ── */}
+      <div
+        className={`navbar-shooting-star ${
+          starState.active ? (starState.direction === "left" ? "sweep-left" : "sweep-right") : ""
+        }`}
+      />
 
       <div className="navbar-container">
         {/* LOGO */}
@@ -170,7 +186,7 @@ function Navbar() {
             </div>
           ) : (
             <div className="auth-buttons">
-              <Link to="/login" className="nav-item">
+              <Link to="/login" className="nav-item signin-link">
                 Sign in
               </Link>
               <Link to="/register" className="join-button">

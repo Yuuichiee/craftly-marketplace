@@ -12,9 +12,8 @@ const CardOrbit3D = () => {
   const navigate = useNavigate();
 
   const [selectedCard, setSelectedCard] = useState(null);
-  const [hoveredCard, setHoveredCard] = useState(null);
 
-  // Smooth lerp 3D rotation loop (No jump / gap on click)
+  // Smooth lerp 3D rotation loop
   useEffect(() => {
     let lastTime = performance.now();
 
@@ -60,8 +59,6 @@ const CardOrbit3D = () => {
     navigate(`/gigs?cat=${cat}`);
   };
 
-  const activeCard = hoveredCard || selectedCard;
-
   return (
     <section className="orbit-3d-section">
       <div className="container">
@@ -75,15 +72,12 @@ const CardOrbit3D = () => {
         <div
           className="orbit-stage"
           onMouseEnter={() => (isPausedRef.current = true)}
-          onMouseLeave={() => {
-            isPausedRef.current = false;
-            setHoveredCard(null);
-          }}
+          onMouseLeave={() => (isPausedRef.current = false)}
         >
           <div className="orbit-ring" ref={ringRef}>
             {cards.map((card, index) => {
               const angle = (index * 360) / totalCards;
-              const isSelected = activeCard?.id === card.id;
+              const isSelected = selectedCard?.id === card.id;
 
               return (
                 <div
@@ -92,7 +86,6 @@ const CardOrbit3D = () => {
                   style={{
                     transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
                   }}
-                  onMouseEnter={() => setHoveredCard(card)}
                   onClick={() => handleCardClick(card, index)}
                 >
                   <div className="orbit-card-inner glass-card">
@@ -119,24 +112,22 @@ const CardOrbit3D = () => {
           </div>
         </div>
 
-        {/* HOVER / SELECTED QUICK PREVIEW POPUP MODAL */}
-        {activeCard && (
+        {/* CLICKED PREVIEW MODAL ONLY */}
+        {selectedCard && (
           <div className="selected-card-panel fade-in-up">
             <div className="panel-inner glass-card">
-              <img src={activeCard.img} alt={activeCard.title} className="panel-thumb" />
+              <img src={selectedCard.img} alt={selectedCard.title} className="panel-thumb" />
               <div className="panel-content">
-                <span className="section-label">✦ {hoveredCard ? "Hovered Preview" : "Selected Category"}</span>
-                <h3>{activeCard.title}</h3>
-                <p>{activeCard.desc}</p>
+                <span className="section-label">Selected Category</span>
+                <h3>{selectedCard.title}</h3>
+                <p>{selectedCard.desc}</p>
                 <div className="panel-actions">
-                  <button className="btn-primary" onClick={() => handleExplore(activeCard.cat)}>
-                    Browse {activeCard.title} Services →
+                  <button className="btn-primary" onClick={() => handleExplore(selectedCard.cat)}>
+                    Browse {selectedCard.title} Services →
                   </button>
-                  {selectedCard && (
-                    <button className="btn-outline" onClick={() => setSelectedCard(null)}>
-                      Close Preview
-                    </button>
-                  )}
+                  <button className="btn-outline" onClick={() => setSelectedCard(null)}>
+                    Close Preview
+                  </button>
                 </div>
               </div>
             </div>
