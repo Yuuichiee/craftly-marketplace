@@ -6,13 +6,14 @@ import "./CardOrbit3D.scss";
 const CardOrbit3D = () => {
   const ringRef = useRef(null);
   const rotationRef = useRef(0);
+  const targetRotationRef = useRef(null);
   const isPausedRef = useRef(false);
   const animRef = useRef(null);
   const navigate = useNavigate();
 
   const [selectedCard, setSelectedCard] = useState(null);
 
-  // Buttery 120 FPS GPU-accelerated rotation loop without React re-renders
+  // Smooth lerp 3D rotation loop (No jump / gap on click)
   useEffect(() => {
     let lastTime = performance.now();
 
@@ -20,8 +21,21 @@ const CardOrbit3D = () => {
       const delta = (now - lastTime) / 1000;
       lastTime = now;
 
-      if (!isPausedRef.current && ringRef.current) {
-        rotationRef.current = (rotationRef.current + delta * 18) % 360;
+      if (ringRef.current) {
+        if (targetRotationRef.current !== null) {
+          // Smooth lerp to clicked target angle
+          const diff = targetRotationRef.current - rotationRef.current;
+          rotationRef.current += diff * 0.1;
+
+          if (Math.abs(diff) < 0.1) {
+            rotationRef.current = targetRotationRef.current;
+            targetRotationRef.current = null;
+          }
+        } else if (!isPausedRef.current) {
+          // Continuous smooth orbit
+          rotationRef.current = (rotationRef.current + delta * 15) % 360;
+        }
+
         ringRef.current.style.transform = `rotateY(${rotationRef.current}deg)`;
       }
 
@@ -38,10 +52,7 @@ const CardOrbit3D = () => {
   const handleCardClick = (card, index) => {
     setSelectedCard(card);
     const targetAngle = -((index * 360) / totalCards);
-    rotationRef.current = targetAngle;
-    if (ringRef.current) {
-      ringRef.current.style.transform = `rotateY(${targetAngle}deg)`;
-    }
+    targetRotationRef.current = targetAngle;
   };
 
   const handleExplore = (cat) => {
