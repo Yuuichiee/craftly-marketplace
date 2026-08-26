@@ -1,18 +1,36 @@
 import React from "react";
 import "./TrustedBy.scss";
 
+const COMPANIES = [
+  "Zoogle",
+  "Fakebook",
+  "Getflix",
+  "Paygrl",
+  "Microsoft",
+  "Airbnb",
+  "Spotify",
+  "Linear",
+  "Figma",
+];
+
 const TrustedBy = () => {
   return (
-    <div className="trustedBy">
-      <div className="container">
-        <span>Trusted by:</span>
-        <img src="https://fiverr-res.cloudinary.com/npm-assets/@fiverr/logged_out_homepage_perseus/apps/facebook2x.188a797.png" alt="" />
-        <img src="https://fiverr-res.cloudinary.com/npm-assets/@fiverr/logged_out_homepage_perseus/apps/google2x.06d74c8.png" alt="" />
-        <img src="https://fiverr-res.cloudinary.com/npm-assets/@fiverr/logged_out_homepage_perseus/apps/netflix2x.887e47e.png" alt="" />
-        <img src="https://fiverr-res.cloudinary.com/npm-assets/@fiverr/logged_out_homepage_perseus/apps/pandg2x.6dc32e4.png" alt="" />
-        <img src="https://fiverr-res.cloudinary.com/npm-assets/@fiverr/logged_out_homepage_perseus/apps/paypal2x.22728be.png" alt="" />
+    <section className="trustedBy">
+      <div className="container text-center">
+        <span className="label">✦ TRUSTED BY LEADING GLOBAL BRANDS ✦</span>
+
+        {/* CENTERED INFINITE MARQUEE */}
+        <div className="marquee-wrapper">
+          <div className="marquee">
+            {COMPANIES.concat(COMPANIES).map((company, index) => (
+              <div key={index} className="company-pill glass-card">
+                <span>{company}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
