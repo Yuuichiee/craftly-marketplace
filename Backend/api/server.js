@@ -26,10 +26,7 @@ const connect = async () => {
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, etc.) or any localhost / local IP origin
-      if (!origin || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
-        return callback(null, true);
-      }
+      // Allow requests from any origin or localhost/Vercel URLs
       return callback(null, true);
     },
     credentials: true,
@@ -52,13 +49,14 @@ app.use((err, req, res, next) => {
   return res.status(errorStatus).json({ message: errorMessage });
 });
 
+const PORT = process.env.PORT || 8800;
+
 const start = async () => {
   try {
     await connect();
-    app.listen(8800, () => console.log("Backend server is running on port 8800!"));
+    app.listen(PORT, () => console.log(`Backend server is running on port ${PORT}!`));
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
   }
 };
 
