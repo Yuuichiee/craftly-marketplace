@@ -14,14 +14,14 @@ function Featured() {
       <div className="container">
         <div className="left">
           <h1>
-            Find the perfect <span>freelance</span> services for your business
+            Find the right <span>creative spark</span> for your next big move
           </h1>
           <div className="search">
             <div className="searchInput">
               <img src="./img/search.png" alt="" />
               <input
                 type="text"
-                placeholder='Try "building mobil app"'
+                placeholder='Try "brand identity for a coffee shop"'
                 onChange={(e) => setInput(e.target.value)}
               />
             </div>
@@ -29,14 +29,19 @@ function Featured() {
           </div>
           <div className="popular">
             <span>Popular:</span>
-            <button>Web Design</button>
-            <button>WordPress</button>
-            <button>Logo Design</button>
-            <button>AI Services</button>
+              <button onClick={() => navigate("/gigs?search=web%20design")}>Web design</button>
+              <button onClick={() => navigate("/gigs?search=wordpress")}>WordPress</button>
+              <button onClick={() => navigate("/gigs?search=logo%20design")}>Logo design</button>
+              <button onClick={() => navigate("/gigs?search=AI")}>AI services</button>
           </div>
         </div>
         <div className="right">
-          <img src="./img/man.png" alt="" />
+          <div className="heroNote">CRAFTLY / 01</div>
+          <div className="heroCard heroCardMain">
+            <img src="./img/man.png" alt="Creative professional" />
+            <span>Make something<br /><strong>worth sharing.</strong></span>
+          </div>
+          <div className="heroCard heroCardMini"><b>24k+</b><small>creators ready<br />to collaborate</small></div>
         </div>
       </div>
     </div>

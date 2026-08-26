@@ -1,6 +1,29 @@
-* {
-  .link {
-    text-decoration: none;
-    color: inherit;
-  }
+:root {
+  --ink: #17202b;
+  --muted: #66717d;
+  --paper: #f7f5ef;
+  --white: #ffffff;
+  --coral: #ff695f;
+  --citrus: #d9f36b;
+  --blue: #3977ff;
+  --line: #dfe3e6;
+  font-family: "DM Sans", sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); overflow-x: hidden; }
+html { overflow-x: hidden; }
+button, input, textarea, select { font: inherit; }
+.link { text-decoration: none; color: inherit; }
+
+@media (max-width: 760px) {
+  .container, .register form, .login form { width: calc(100% - 28px) !important; }
+  .register form, .login form { padding: 48px 0 !important; }
+  .register form { flex-direction: column; gap: 44px !important; }
+  .gigs .container, .gig .container, .messages .container, .orders .container, .myGigs .container, .add .container { padding: 32px 0 !important; }
+  .gig .container, .add .sections { flex-direction: column; gap: 32px !important; }
+  .gigs .menu { align-items: flex-start; gap: 18px !important; flex-direction: column; }
+  table { display: block; overflow-x: auto; white-space: nowrap; }
 }

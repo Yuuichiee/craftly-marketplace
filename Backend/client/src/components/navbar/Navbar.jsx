@@ -39,15 +39,15 @@ function Navbar() {
       <div className="container">
         <div className="logo">
           <Link className="link" to="/">
-            <span className="text">fiverr</span>
+            <span className="text">craftly</span>
           </Link>
           <span className="dot">.</span>
         </div>
         <div className="links">
-          <span>Fiverr Business</span>
-          <span>Explore</span>
+          <span className="navHint">For ambitious teams</span>
+          <Link className="link navLink" to="/gigs">Explore work</Link>
           <span>English</span>
-          {!currentUser?.isSeller && <span>Become a Seller</span>}
+          {!currentUser?.isSeller && <span>Become a creator</span>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
@@ -57,10 +57,10 @@ function Navbar() {
                   {currentUser.isSeller && (
                     <>
                       <Link className="link" to="/mygigs">
-                        Gigs
+                        My gigs
                       </Link>
                       <Link className="link" to="/add">
-                        Add New Gig
+                        Publish a gig
                       </Link>
                     </>
                   )}
@@ -71,16 +71,16 @@ function Navbar() {
                     Messages
                   </Link>
                   <Link className="link" onClick={handleLogout}>
-                    Logout
+                    Sign out
                   </Link>
                 </div>
               )}
             </div>
           ) : (
             <>
-              <Link to="/login" className="link">Sign in</Link>
+              <Link to="/login" className="link signin">Sign in</Link>
               <Link className="link" to="/register">
-                <button>Join</button>
+                <button>Join Craftly</button>
               </Link>
             </>
           )}
@@ -91,28 +91,28 @@ function Navbar() {
           <hr />
           <div className="menu">
             <Link className="link menuLink" to="/">
-              Graphics & Design
+              Design
             </Link>
             <Link className="link menuLink" to="/">
-              Video & Animation
+              Motion
             </Link>
             <Link className="link menuLink" to="/">
-              Writing & Translation
+              Writing
             </Link>
             <Link className="link menuLink" to="/">
-              AI Services
+              AI & data
             </Link>
             <Link className="link menuLink" to="/">
-              Digital Marketing
+              Growth
             </Link>
             <Link className="link menuLink" to="/">
-              Music & Audio
+              Audio
             </Link>
             <Link className="link menuLink" to="/">
-              Programming & Tech
+              Technology
             </Link>
             <Link className="link menuLink" to="/">
-              Business
+              Strategy
             </Link>
             <Link className="link menuLink" to="/">
               Lifestyle

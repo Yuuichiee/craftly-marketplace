@@ -43,10 +43,10 @@ function Gigs() {
   return (
     <div className="gigs">
       <div className="container">
-        <span className="breadcrumbs">Liverr &gt; Graphics &amp; Design &gt;</span>
+        <span className="breadcrumbs">Craftly &gt; Design &gt;</span>
         <h1>AI Artists</h1>
         <p>
-          Explore the boundaries of art and technology with Liverr's AI artists
+          Explore the boundaries of craft and technology with Craftly's creators
         </p>
         <div className="menu">
           <div className="left">

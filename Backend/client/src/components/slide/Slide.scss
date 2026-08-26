@@ -4,7 +4,7 @@
   padding: 100px 0px;
   
   .container {
-    width: 1400px;
+    width: min(1180px, calc(100% - 48px));
     position: relative;
   }
 
@@ -27,4 +27,11 @@
   .carousel-prev {
     left: -25px;
   }
+}
+
+@media (max-width: 760px) {
+  .slide { padding: 64px 0; overflow: hidden; }
+  .slide .container { width: calc(100% - 28px); }
+  .slide .carousel-prev { left: 4px; }
+  .slide .carousel-next { right: 4px; }
 }

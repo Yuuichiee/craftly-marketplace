@@ -1,8 +1,9 @@
 .catCard {
-  width: 252px;
-  height: 344px;
+  width: 100%;
+  height: 320px;
   color: white;
-  border-radius: 5px;
+  border-radius: 16px;
+  overflow: hidden;
   position: relative;
   cursor: pointer;
 
@@ -23,7 +24,9 @@
     position: absolute;
     top: 40px;
     left: 15px;
-    font-size:24px;
+    font: 600 24px "Space Grotesk", sans-serif;
     font-weight: 500;
   }
 }
+
+@media (max-width: 760px) { .catCard { height: 270px; } }

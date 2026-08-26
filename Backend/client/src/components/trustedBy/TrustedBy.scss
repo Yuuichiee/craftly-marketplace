@@ -1,20 +1,25 @@
 .trustedBy {
-  background-color: #fafafa;
-  height: 100px;
+  background-color: var(--paper);
+  min-height: 104px;
   display: flex;
   justify-content: center;
 
   .container {
-    max-width: 760px;
+    width: min(900px, calc(100% - 48px));
     display: flex;
     align-items: center;
     gap: 20px;
-    color: rgb(200, 200, 200);
+    color: var(--muted);
     font-weight: 500;
 
     img{
-      height: 50px;
+      height: 34px;
       object-fit: contain;
     }
   }
+}
+
+@media (max-width: 600px) {
+  .trustedBy .container { flex-wrap: wrap; justify-content: center; gap: 14px; }
+  .trustedBy .container img { max-width: 82px; }
 }

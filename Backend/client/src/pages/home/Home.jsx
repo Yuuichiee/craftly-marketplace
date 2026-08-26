@@ -151,10 +151,10 @@ function Home() {
         <div className="container">
           <div className="item">
             <h1>
-              fiverr <i>business</i>
+              craftly <i>teams</i>
             </h1>
             <h1>
-              A business solution designed for <i>teams</i>
+              A creative workspace designed for <i>teams</i>
             </h1>
             <p>
               Upgrade to a curated experience packed with tools and benefits,
@@ -174,7 +174,7 @@ function Home() {
               <img src="./img/check.png" alt="" />
               Manage teamwork and boost productivity with one powerful workspace
             </div>
-            <button>Explore Fiverr Business</button>
+            <button>Explore Craftly Teams</button>
           </div>
           <div className="item">
             <img
