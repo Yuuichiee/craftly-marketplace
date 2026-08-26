@@ -15,7 +15,10 @@ const GigCard = ({ item }) => {
   return (
     <Link to={`/gig/${gigId}`} className="link">
       <div className="gigCard">
-        <img src={coverImg} alt={description} />
+        <div className="cover-wrap">
+          <img src={coverImg} alt={description} className="card-cover" />
+          <div className="cover-gradient" />
+        </div>
         <div className="info">
           <div className="user">
             <img src={userImg} alt={username} />
@@ -23,19 +26,20 @@ const GigCard = ({ item }) => {
           </div>
           <p>{description}</p>
           <div className="star">
-            <span style={{ color: "#f59e0b", fontWeight: "bold" }}>★</span>
+            <span style={{ color: "#f59e0b" }}>★</span>
             <span>{rating}</span>
           </div>
         </div>
         <hr />
         <div className="detail">
           <span
+            className="fav-btn"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setIsLiked(!isLiked);
             }}
-            style={{ fontSize: "18px", cursor: "pointer", color: isLiked ? "#ef4444" : "var(--text-muted)" }}
+            style={{ color: isLiked ? "#ef4444" : "var(--text-muted)" }}
             title={isLiked ? "Remove favorite" : "Save favorite"}
           >
             {isLiked ? "♥" : "♡"}

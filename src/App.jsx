@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { createBrowserRouter, Outlet, RouterProvider, useLocation } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
-import GlobalMouse from "./components/globalMouse/GlobalMouse";
+import UniverseBackground from "./components/universeBg/UniverseBackground";
 import Home from "./pages/home/Home";
 import Gigs from "./pages/gigs/Gigs";
 import Gig from "./pages/gig/Gig";
@@ -29,7 +29,7 @@ const ScrollToTop = () => {
 const Layout = () => {
   return (
     <div className="app">
-      <GlobalMouse />
+      <UniverseBackground />
       <ScrollToTop />
       <Navbar />
       <main>

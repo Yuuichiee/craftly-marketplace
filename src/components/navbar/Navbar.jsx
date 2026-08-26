@@ -6,18 +6,48 @@ import { showToast } from "../../utils/toast";
 import "./Navbar.scss";
 
 function Navbar() {
+  const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const lastScrollY = useRef(0);
+  const dropdownRef = useRef();
   const { currentUser, dispatch } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const dropdownRef = useRef();
 
+  // Shooting star entrance reveal on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRevealed(true);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Hide navbar on scroll down, reveal on scroll up
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 60) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // Scrolling down -> hide navbar
+        setVisible(false);
+      } else {
+        // Scrolling up or at top -> show navbar
+        setVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -47,53 +77,43 @@ function Navbar() {
 
   const navLinks = [
     { label: "Home", path: "/" },
-    { label: "Explore Services", path: "/gigs" },
-  ];
-
-  const categoryPills = [
-    { label: "✨ AI Artists", cat: "ai-artists" },
-    { label: "🎨 Logo Design", cat: "logo-design" },
-    { label: "⚡ WordPress", cat: "wordpress" },
-    { label: "🎙️ Voice Over", cat: "voice-over" },
-    { label: "🎬 Video Explainer", cat: "video-explainer" },
-    { label: "📈 SEO", cat: "seo" },
-    { label: "🖌️ Illustration", cat: "illustration" },
+    { label: "Explore", path: "/gigs" },
   ];
 
   return (
-    <header className={`floating-navbar-wrap ${scrolled ? "scrolled" : ""}`}>
-      {/* ── MAIN FLOATING CAPSULE DOCK ── */}
-      <nav className="floating-dock">
+    <header className={`modern-navbar-header ${visible ? "visible" : "hidden"} ${scrolled ? "scrolled" : ""} ${revealed ? "revealed" : ""}`}>
+      {/* ── SHOOTING STAR ENTRANCE EFFECT ── */}
+      <div className="navbar-shooting-star" />
+
+      <div className="navbar-container">
         {/* LOGO */}
-        <Link to="/" className="dock-logo">
-          <div className="logo-spark-wrap">
-            <span className="spark-icon">✦</span>
-          </div>
-          <span className="logo-text">LIVERR</span>
+        <Link to="/" className="navbar-logo">
+          <span className="brand-title">LIVERR</span>
+          <span className="brand-dot" />
         </Link>
 
-        {/* NAV LINKS */}
-        <div className="dock-nav-links">
+        {/* NAVIGATION LINKS */}
+        <div className="navbar-links">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`dock-link ${pathname === link.path ? "active" : ""}`}
+              className={`nav-item ${pathname === link.path ? "active" : ""}`}
             >
               {link.label}
             </Link>
           ))}
-        </div>
 
-        {/* ACTIONS & USER PROFILE */}
-        <div className="dock-actions">
+          {!currentUser && (
+            <Link to="/register" className="nav-item">
+              Become a Seller
+            </Link>
+          )}
+
+          {/* USER PROFILE OR AUTH BUTTONS */}
           {currentUser ? (
-            <div className="user-profile-menu" ref={dropdownRef}>
-              <button
-                className="user-avatar-btn"
-                onClick={() => setOpen((prev) => !prev)}
-                aria-label="User menu"
-              >
+            <div className="user-menu-wrap" ref={dropdownRef}>
+              <button className="user-btn" onClick={() => setOpen((prev) => !prev)}>
                 <img
                   src={
                     currentUser.img ||
@@ -101,78 +121,54 @@ function Navbar() {
                   }
                   alt={currentUser.username}
                 />
-                <span className="user-name">{currentUser.username}</span>
-                <span className="online-indicator" />
+                <span>{currentUser.username}</span>
               </button>
 
               {open && (
-                <div className="dock-dropdown-menu">
-                  <div className="dropdown-header">
-                    <span className="user-role-badge">
-                      {currentUser.isSeller ? "✦ Seller Account" : "👤 Buyer Account"}
-                    </span>
-                    <span className="user-handle">@{currentUser.username}</span>
+                <div className="user-dropdown">
+                  <div className="dropdown-user-info">
+                    <span className="badge-role">{currentUser.isSeller ? "✦ Seller" : "👤 Buyer"}</span>
+                    <span className="username">@{currentUser.username}</span>
                   </div>
 
-                  <div className="dropdown-divider" />
+                  <hr />
 
                   {currentUser.isSeller && (
                     <>
-                      <Link to="/myGigs" className="dropdown-item" onClick={() => setOpen(false)}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M5 6h6M5 9h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                        My Services
+                      <Link to="/myGigs" className="menu-link" onClick={() => setOpen(false)}>
+                        My Listed Gigs
                       </Link>
-                      <Link to="/add" className="dropdown-item" onClick={() => setOpen(false)}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                      <Link to="/add" className="menu-link" onClick={() => setOpen(false)}>
                         Add New Gig
                       </Link>
                     </>
                   )}
 
-                  <Link to="/orders" className="dropdown-item" onClick={() => setOpen(false)}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10l-1 8H4L3 4z" stroke="currentColor" strokeWidth="1.5"/><path d="M6 4V3a2 2 0 014 0v1" stroke="currentColor" strokeWidth="1.5"/></svg>
-                    Orders & Purchases
+                  <Link to="/orders" className="menu-link" onClick={() => setOpen(false)}>
+                    Orders
+                  </Link>
+                  <Link to="/messages" className="menu-link" onClick={() => setOpen(false)}>
+                    Messages
                   </Link>
 
-                  <Link to="/messages" className="dropdown-item" onClick={() => setOpen(false)}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H4l-2 2V3z" stroke="currentColor" strokeWidth="1.5"/></svg>
-                    Messages & Inbox
-                  </Link>
+                  <hr />
 
-                  <div className="dropdown-divider" />
-
-                  <button className="dropdown-item logout" onClick={handleLogout}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M11 11l3-3-3-3M14 8H6" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  <button className="menu-link logout-btn" onClick={handleLogout}>
                     Log Out
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <div className="guest-actions">
-              <Link to="/login" className="login-link">
+            <div className="auth-buttons">
+              <Link to="/login" className="nav-item">
                 Sign in
               </Link>
-              <Link to="/register" className="join-btn-beam">
-                <span>Join Liverr</span>
+              <Link to="/register" className="join-button">
+                Join
               </Link>
             </div>
           )}
-        </div>
-      </nav>
-
-      {/* ── FLOATING CATEGORY QUICK-BAR ── */}
-      <div className="category-quick-bar">
-        <div className="quick-bar-scroll">
-          {categoryPills.map((pill) => (
-            <Link
-              key={pill.cat}
-              to={`/gigs?cat=${pill.cat}`}
-              className="cat-pill"
-            >
-              {pill.label}
-            </Link>
-          ))}
         </div>
       </div>
     </header>

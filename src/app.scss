@@ -255,14 +255,14 @@ img {
   background: var(--border);
 }
 
-// Page wrapper with top padding for floating navbar
+// Page wrapper with top padding for sleek header navbar
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 
   main {
-    padding-top: 140px;
+    padding-top: 90px;
     flex: 1;
   }
 }
