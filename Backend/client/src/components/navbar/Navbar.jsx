@@ -44,10 +44,8 @@ function Navbar() {
           <span className="dot">.</span>
         </div>
         <div className="links">
-          <span className="navHint">For ambitious teams</span>
           <Link className="link navLink" to="/gigs">Explore work</Link>
-          <span>English</span>
-          {!currentUser?.isSeller && <span>Become a creator</span>}
+          {!currentUser?.isSeller && <Link className="link creatorLink" to="/register">Become a creator</Link>}
           {currentUser ? (
             <div className="user" onClick={() => setOpen(!open)}>
               <img src={currentUser.img || "/img/noavatar.jpg"} alt="" />
@@ -90,31 +88,31 @@ function Navbar() {
         <>
           <hr />
           <div className="menu">
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=design">
               Design
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=motion">
               Motion
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=writing">
               Writing
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=AI">
               AI & data
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=growth">
               Growth
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=audio">
               Audio
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=technology">
               Technology
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=strategy">
               Strategy
             </Link>
-            <Link className="link menuLink" to="/">
+            <Link className="link menuLink" to="/gigs?search=lifestyle">
               Lifestyle
             </Link>
           </div>

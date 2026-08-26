@@ -49,8 +49,8 @@
         white-space: nowrap;
       }
 
-      .navHint { color: #aeb7c1; font-weight: 400; }
       .navLink:hover { color: var(--citrus); }
+      .creatorLink:hover { color: var(--citrus); }
 
       .user {
         display: flex;
@@ -121,7 +121,6 @@
   .navbar .container { width: calc(100% - 28px); }
   .navbar .logo { font-size: 26px; }
   .navbar .links { gap: 8px; }
-  .navbar .navHint { display: none; }
   .navbar .navLink { display: none; }
   .navbar .signin { display: none; }
   .navbar .links > .link button { padding: 7px 10px; font-size: 11px; }

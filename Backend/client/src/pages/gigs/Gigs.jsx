@@ -78,6 +78,8 @@ function Gigs() {
             ? "loading"
             : error
             ? "Something went wrong!"
+            : data.length === 0
+            ? <p className="emptyState">No gigs yet. Try another search or check back soon.</p>
             : data.map((gig) => <GigCard key={gig._id} item={gig} />)}
         </div>
       </div>

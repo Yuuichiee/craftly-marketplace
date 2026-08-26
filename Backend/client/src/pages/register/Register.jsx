@@ -40,7 +40,7 @@ function Register() {
         ...user,
         img: url,
       });
-      navigate("/")
+      navigate("/login")
     } catch (err) {
       setError(err.response?.data || "Registration failed. Please try again.");
     }
