@@ -1,83 +1,61 @@
 .trustedBy {
-  padding: 48px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  overflow: hidden;
+  background: rgba(3, 3, 7, 0.4);
+  padding: 24px 0;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
   z-index: 1;
 
-  .text-center {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .label {
-    display: block;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 28px;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  }
-
-  .marquee-wrapper {
+  .container {
+    max-width: 900px;
     width: 100%;
     display: flex;
-    justify-content: center;
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-  }
-
-  .marquee {
-    display: flex;
-    gap: 24px;
-    animation: marqueeScroll 25s linear infinite;
-    white-space: nowrap;
-    flex-shrink: 0;
-
-    &:hover {
-      animation-play-state: paused;
-    }
-  }
-
-  @keyframes marqueeScroll {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-
-  .company-pill {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-full);
-    transition: all 0.25s ease;
-
-    &:hover {
-      border-color: rgba(168, 85, 247, 0.5);
-      background: rgba(124, 58, 237, 0.1);
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.25);
-    }
+    gap: 32px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
 
     span {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #ffffff;
+      white-space: nowrap;
+      color: var(--text-muted);
+    }
+
+    .brand-logos-row {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      .brand-logo {
+        display: flex;
+        align-items: center;
+        opacity: 0.7;
+        filter: grayscale(30%);
+        transition: all 0.25s ease;
+        cursor: default;
+
+        &:hover {
+          opacity: 1;
+          filter: grayscale(0%);
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .trustedBy .container {
+    flex-direction: column !important;
+    gap: 16px !important;
+
+    .brand-logos-row {
+      gap: 24px !important;
     }
   }
 }
