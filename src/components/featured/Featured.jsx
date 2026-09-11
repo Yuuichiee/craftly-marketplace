@@ -55,3 +55,4 @@ function Featured() {
 }
 
 export default Featured;
+// Not using it rn

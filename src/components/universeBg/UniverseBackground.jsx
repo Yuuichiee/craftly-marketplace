@@ -141,3 +141,14 @@ const UniverseBackground = () => {
 };
 
 export default UniverseBackground;
+
+/**
+ * UniverseBackground.jsx — Global Dark Universe Canvas Background
+ * 
+ * Where it is used:
+ *   - App.jsx (renders globally behind all pages)
+ * 
+ * What it renders:
+ *   - 200 twinkling 4-pointed Gemini sparkle stars (✦)
+ *   - Deep space dark background (#050508) with background shooting stars.
+ */

@@ -55,3 +55,17 @@ const GigCard = ({ item }) => {
 };
 
 export default GigCard;
+
+/**
+ * GigCard.jsx — Freelancer Service Card Component
+ * 
+ * Where it is used: 
+ *   - Homepage ("Top Services / Popular right now" section)
+ *   - All Services Page (/gigs)
+ * 
+ * What it displays:
+ *   - Seller profile picture & username
+ *   - Service cover photo & title
+ *   - Star rating (e.g. ★ 5.0) & favorite heart button
+ *   - Starting price in USD (e.g. STARTING AT $45)
+ */

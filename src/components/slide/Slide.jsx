@@ -15,3 +15,4 @@ const Slide = ({ children, slidesToShow, arrowsScroll }) => {
 };
 
 export default Slide;
+// not used 

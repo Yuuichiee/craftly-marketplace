@@ -16,3 +16,15 @@ function CatCard({ card }) {
 }
 
 export default CatCard;
+
+/**
+ * CatCard.jsx — Category Card Component
+ * 
+ * Where it is used:
+ *   - Homepage ("Browse / Explore by category" section)
+ * 
+ * What it displays:
+ *   - Full background category image
+ *   - Category title & subtitle (e.g. AI Artists, Logo Design, WordPress, SEO)
+ *   - Clicking opens /gigs?cat=category-slug
+ */

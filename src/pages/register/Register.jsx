@@ -57,7 +57,7 @@ const Register = () => {
         <div className="visual-glow violet" />
         <div className="visual-glow pink" />
         <div className="visual-content">
-          <Link to="/" className="auth-logo">Liverr</Link>
+          <Link to="/" className="auth-logo">GigConnect</Link>
           <div className="visual-features">
             <h2>Start your journey today</h2>
             <div className="feature-list">

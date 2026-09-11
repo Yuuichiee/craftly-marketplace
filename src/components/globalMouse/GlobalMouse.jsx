@@ -96,3 +96,11 @@ const GlobalMouse = () => {
 };
 
 export default GlobalMouse;
+
+/**
+ * GlobalMouse.jsx — Interactive Mouse Cursor Trail Component
+ * 
+ * What it does:
+ *   - Spawns glowing purple & cyan particle smoke rings that follow the mouse cursor.
+ *   - Uses HTML5 2D Canvas for high-performance particle animation.
+ */

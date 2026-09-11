@@ -13,3 +13,4 @@ const EnergyHeading = ({ text, highlightText }) => {
 };
 
 export default EnergyHeading;
+// used in The Future of Freelancing Hire expert freelancers for any project

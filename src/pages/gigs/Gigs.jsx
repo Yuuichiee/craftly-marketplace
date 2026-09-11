@@ -80,7 +80,7 @@ function Gigs() {
           <Link to="/" className="link">Home</Link> &gt; {catParam || searchParam || "Explore Services"} &gt;
         </div>
         <h1>{catParam ? catParam.replace(/-/g, ' ').toUpperCase() : searchParam ? `Results for "${searchParam}"` : "All Services"}</h1>
-        <p>Explore top freelance talent and services on Liverr</p>
+        <p>Explore top freelance talent and services on GigConnect</p>
 
         <div className="menu">
           <div className="left">

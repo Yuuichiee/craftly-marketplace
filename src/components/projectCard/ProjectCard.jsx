@@ -24,3 +24,18 @@ function ProjectCard({ card }) {
 }
 
 export default ProjectCard;
+
+/**
+ * ProjectCard.jsx — Creator Portfolio Showcase Card Component
+ * 
+ * Where it is used:
+ *   - Homepage ("Inspiration from our creators" slider)
+ * 
+ * What it displays:
+ *   - Full project screenshot image
+ *   - Creator avatar, username, and portfolio category name
+ */
+
+
+// Inspiration
+//Real work from real Liverr freelancers

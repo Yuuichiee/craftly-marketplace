@@ -44,9 +44,9 @@ const Login = () => {
         <div className="visual-glow violet" />
         <div className="visual-glow cyan" />
         <div className="visual-content">
-          <Link to="/" className="auth-logo">Liverr</Link>
+          <Link to="/" className="auth-logo">GigConnect</Link>
           <blockquote>
-            <p>"The best freelancers, the fastest results. Liverr changed how we build products."</p>
+            <p>"The best freelancers, the fastest results. GigConnect changed how we build products."</p>
             <cite>— Sarah K., Product Lead at Notion</cite>
           </blockquote>
           <div className="visual-stats">
@@ -62,7 +62,7 @@ const Login = () => {
         <div className="auth-form-card">
           <div className="auth-header">
             <h1>Welcome back</h1>
-            <p>Sign in to your Liverr account</p>
+            <p>Sign in to your GigConnect account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -131,7 +131,7 @@ const Login = () => {
           </form>
 
           <div className="auth-footer">
-            <p>Don't have an account? <Link to="/register">Join Liverr</Link></p>
+            <p>Don't have an account? <Link to="/register">Join GigConnect</Link></p>
           </div>
         </div>
       </div>

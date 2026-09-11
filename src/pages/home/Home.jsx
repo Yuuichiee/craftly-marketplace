@@ -290,11 +290,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── WHY LIVERR ── */}
+      {/* ── WHY GIGCONNECT ── */}
       <section className="why-section">
         <div className="container">
           <div className="section-header">
-            <span className="section-label">Why Liverr</span>
+            <span className="section-label">Why GigConnect</span>
             <h2>The smarter way to work</h2>
           </div>
           <div className="why-grid">
@@ -302,7 +302,7 @@ const Home = () => {
               {
                 icon: (<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="url(#g1)" strokeWidth="1.5"/><path d="M8 14l4 4 8-8" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><defs><linearGradient id="g1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stopColor="#7c3aed"/><stop offset="1" stopColor="#06b6d4"/></linearGradient></defs></svg>),
                 title: 'Vetted Professionals',
-                desc: 'Every seller goes through identity verification and skill assessment before joining Liverr.',
+                desc: 'Every seller goes through identity verification and skill assessment before joining GigConnect.',
               },
               {
                 icon: (<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 2L4 7v8c0 6.1 4.3 11.8 10 13.3 5.7-1.5 10-7.2 10-13.3V7L14 2z" stroke="url(#g2)" strokeWidth="1.5" strokeLinejoin="round"/><defs><linearGradient id="g2" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stopColor="#7c3aed"/><stop offset="1" stopColor="#06b6d4"/></linearGradient></defs></svg>),
@@ -335,7 +335,7 @@ const Home = () => {
         <div className="container">
           <div className="section-header">
             <span className="section-label">Inspiration</span>
-            <h2>Real work from real Liverr freelancers</h2>
+            <h2>Real work from real GigConnect freelancers</h2>
             <p>Click on any project to explore matching services</p>
           </div>
           <div className="projects-grid">

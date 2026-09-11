@@ -121,7 +121,7 @@ function Navbar() {
       <div className="navbar-container">
         {/* LOGO */}
         <Link to="/" className="navbar-logo">
-          <span className="brand-title">LIVERR</span>
+          <span className="brand-title">GIGCONNECT</span>
           <span className="brand-dot" />
         </Link>
 
@@ -209,3 +209,15 @@ function Navbar() {
 }
 
 export default Navbar;
+
+/**
+ * Navbar.jsx — Glassmorphism Header & Shooting Star Component
+ * 
+ * Where it is used:
+ *   - Top of every page on your website.
+ * 
+ * What it contains:
+ *   - Alternating Shooting Star streaks (Top Left->Right & Bottom Right->Left).
+ *   - LIVERR brand logo & navigation links (Home, Explore).
+ *   - Auth links (Sign in, Join) / User profile dropdown menu (My Gigs, Add Gig, Orders, Logout).
+ */
