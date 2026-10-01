@@ -30,8 +30,8 @@ const connect = async () => {
   await mongoose.connect(process.env.MONGO);
   console.log("Connected to mongoDB!");
 };
-
-app.use(
+//Middleware gives you a place to prepare/check the request before it reaches the controller.
+app.use( // CORS middleware
   cors({
     origin: (origin, callback) => {
       // Allow requests from any origin or localhost/Vercel URLs
@@ -40,8 +40,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json());  // Built-in Express middleware
+app.use(cookieParser());  // cookie middleware → cookieParser() reads cookies from requests.
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -51,7 +51,7 @@ app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/reviews", reviewRoute);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {  // error handling middleware
   const errorStatus = err.status || 500;
   
   if (errorStatus >= 500) {
